@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>The Midnight Shift</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      color: #ececec;
+      background: #081017;
+      font-family: "Inter", system-ui, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(circle at top, rgba(90, 105, 124, 0.15), transparent 28%),
+                  linear-gradient(180deg, #09101a 0%, #07080a 100%);
+      display: flex;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    #game-container {
+      width: 1280px;
+      height: 720px;
+      position: relative;
+      margin: 0 auto;
+      background: url("ASSETS/Background.png") center center / 100% 100% no-repeat;
+      overflow: hidden;
+    }
+
+    .studio {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    header {
+      position: absolute;
+      top: 20px;
+      left: 32px;
+      right: 32px;
+      text-align: left;
+      pointer-events: none;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2.2rem;
+      letter-spacing: 0.08em;
+      color: #f5f3ea;
+      text-transform: uppercase;
+    }
+
+    header p {
+      margin: 8px 0 0;
+      max-width: 760px;
+      color: #d2d8ea;
+      line-height: 1.5;
+      font-size: 0.95rem;
+    }
+
+    .workbench {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .toolkit {
+      position: absolute;
+      top: 112px;
+      left: 32px;
+      width: 520px;
+      height: 560px;
+      pointer-events: none;
+    }
+
+    .toolkit .draggable-card {
+      pointer-events: all;
+    }
+
+    .draggable-card {
+      width: 160px;
+      min-height: 74px;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(18, 25, 34, 0.94);
+      cursor: grab;
+      user-select: none;
+      color: #edf0f6;
+      box-shadow: 0 18px 36px rgba(0, 0, 0, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 16px;
+      position: absolute;
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    .draggable-card:active {
+      cursor: grabbing;
+    }
+
+    .gift-card {
+      border-color: #7f7be1;
+    }
+
+    .wrapper-card {
+      border-color: #5cbfa3;
+    }
+
+    .child-card {
+      border-color: #eabc58;
+    }
+
+    #item-cactus {
+      position: absolute;
+      left: 10px;
+      top: 20px;
+      width: 120px;
+      height: 120px;
+      background-image: url('assets/cactus.png');
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-color: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      padding: 0;
+      font-size: 0;
+      color: transparent;
+    }
+    #item-mug {
+      position: absolute;
+      left: 135px;
+      top: 20px;
+      width: 120px;
+      height: 120px;
+      background-image: url('assets/mug.png');
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-color: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      padding: 0;
+      font-size: 0;
+      color: transparent;
+    }
+    #item-rollerblade {
+      position: absolute;
+      left: 270px;
+      top: 20px;
+      width: 120px;
+      height: 120px;
+      background-image: url('assets/rollerblade.png');
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-color: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      padding: 0;
+      font-size: 0;
+      color: transparent;
+    }
+
+    #item-foil {
+      position: absolute;
+      left: 2px;
+      top: 200px;
+      width: 120px;
+      height: 120px;
+      background-image: url('assets/foil.png');
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-color: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      padding: 0;
+      font-size: 0;
+      color: transparent;
+    }
+    #item-ducttape {
+      position: absolute;
+      left: 135px;
+      top: 200px;
+      width: 120px;
+      height: 120px;
+      background-image: url('assets/tape.png');
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-color: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      padding: 0;
+      font-size: 0;
+      color: transparent;
+    }
+    #item-bubblewrap {
+      position: absolute;
+      left: 270px;
+      top: 200px;
+      width: 120px;
+      height: 120px;
+      background-image: url('assets/bubblewrap.png');
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-color: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      padding: 0;
+      font-size: 0;
+      color: transparent;
+    }
+
+    #item-arthur {
+      position: absolute;
+      left: 2px;
+      top: 380px;
+      width: 120px;
+      height: 120px;
+      background-image: url('assets/arthur.png');
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-color: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      padding: 0;
+      font-size: 0;
+      color: transparent;
+    }
+    #item-beatrice {
+      position: absolute;
+      left: 135px;
+      top: 380px;
+      width: 120px;
+      height: 120px;
+      background-image: url('assets/beatrice.png');
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-color: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      padding: 0;
+      font-size: 0;
+      color: transparent;
+    }
+    #item-charlie {
+      position: absolute;
+      left: 270px;
+      top: 380px;
+      width: 120px;
+      height: 120px;
+      background-image: url('assets/charlie.png');
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-color: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      padding: 0;
+      font-size: 0;
+      color: transparent;
+    }
+
+    .desk {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .status-panel {
+      position: absolute;
+      top: 22px;
+      right: 32px;
+      width: 360px;
+      color: #d3d8f0;
+      pointer-events: none;
+    }
+
+    .status-panel strong {
+      display: block;
+      color: #eef1ff;
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+      letter-spacing: 0.08em;
+    }
+
+    .status-panel p {
+      margin: 0;
+      line-height: 1.5;
+      font-size: 0.92rem;
+    }
+
+    .action-panel {
+      position: absolute;
+      bottom: 24px;
+      right: 24px;
+      display: flex;
+      gap: 12px;
+      pointer-events: all;
+    }
+
+    .package-column {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      width: 170px;
+      height: auto;
+    }
+
+    #package-column-1 { top: 90px; right: 500px; }
+    #package-column-2 { top: 90px; right: 270px; }
+    #package-column-3 { top: 90px; right: 40px; }
+
+    .package-slot {
+      width: 140px;
+      height: 120px;
+      background: transparent;
+      border: 1px dashed rgba(255, 255, 255, 0.3);
+      border-radius: 14px;
+      pointer-events: all;
+      overflow: hidden;
+      margin-bottom: 60px !important;
+    }
+
+    .package-slot.drag-over {
+      outline: 2px dashed rgba(127, 123, 225, 0.75);
+      outline-offset: -2px;
+    }
+
+    .slot-content {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #eef2ff;
+      font-size: 0.95rem;
+      padding: 8px;
+      opacity: 0;
+      transition: opacity 0.18s ease;
+      pointer-events: none;
+      background-color: transparent !important;
+    }
+
+    .slot-content:not(.empty) {
+      opacity: 1;
+      background-color: transparent !important;
+    }
+
+    button {
+      border: 0;
+      border-radius: 999px;
+      padding: 14px 24px;
+      font-size: 1rem;
+      color: #831511;
+      background: linear-gradient(135deg, #e1e2f0, #d3d5eb);
+      cursor: pointer;
+      transition: transform 0.18s ease, filter 0.18s ease;
+      box-shadow: 0 16px 40px rgba(47, 57, 134, 0.32);
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.04);
+    }
+
+    .status-panel {
+      color: #d7dae4;
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.9);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 50;
+    }
+
+    .modal-overlay.visible {
+      display: flex;
+    }
+
+    .help-button {
+      position: absolute;
+      top: 30px;
+      left: 30px;
+      z-index: 100;
+      width: 40px;
+      height: 40px;
+      background-color: white !important;
+      color: #d42426;
+      border: 2px solid #a01a1c;
+      border-radius: 50%;
+      font-size: 1.25rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: none !important;
+      outline: none !important;
+      text-shadow: none !important;
+      padding: 0;
+    }
+
+    .help-content {
+      width: min(680px, 100%);
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .help-title {
+      margin: 0 0 18px;
+      color: #ffffff;
+      font-size: 2rem;
+      letter-spacing: 0.12em;
+    }
+
+    .help-text {
+      margin: 0 0 24px;
+      color: #ffffff;
+      font-size: 1rem;
+      line-height: 1.8;
+    }
+
+    .modal-card {
+      max-width: 460px;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      border: none;
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-card h2 {
+      margin: 0 0 12px;
+      color: #f7f8fa;
+      font-size: 1.7rem;
+    }
+
+    .modal-card p {
+      margin: 0 0 24px;
+      color: #b4bbd1;
+      line-height: 1.7;
+    }
+
+    .modal-card button {
+      width: 100%;
+      margin-top: 0;
+    }
+
+    .modal-close-button {
+      width: auto;
+      background: transparent !important;
+      border: none !important;
+      color: #ffffff;
+      font-size: 3rem;
+      cursor: pointer;
+      padding: 0;
+      margin: 18px auto 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      box-shadow: none !important;
+      text-shadow: none !important;
+      outline: none !important;
+    }
+
+    .inspector-card {
+      max-width: 520px;
+      padding: 0;
+      position: relative;
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .inspect-image {
+      width: 260px;
+      height: auto;
+      margin: 0 0 24px;
+      border-radius: 0;
+      display: block;
+      object-fit: contain;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .inspect-title {
+      margin: 0 0 18px;
+      font-size: 1.75rem;
+      letter-spacing: 0.03em;
+      color: #ffffff;
+      text-align: center;
+    }
+
+    .inspect-description {
+      color: #ffffff;
+      line-height: 1.8;
+      margin: 0 0 24px;
+      font-size: 1rem;
+      text-align: center;
+      max-width: 580px;
+    }
+  </style>
+</head>
+<body>
+  <div id="game-container">
+    <button id="helpButton" class="help-button" aria-label="Help">?</button>
+    <div class="studio">
+    <div class="workbench">
+      <aside class="toolkit">
+        <div class="draggable-card gift-card" id="item-cactus" draggable="true" data-type="gift" data-value="Cactus"></div>
+        <div class="draggable-card gift-card" id="item-mug" draggable="true" data-type="gift" data-value="World's Okayest Brother Mug"></div>
+        <div class="draggable-card gift-card" id="item-rollerblade" draggable="true" data-type="gift" data-value="Rollerblade"></div>
+
+        <div class="draggable-card wrapper-card" id="item-foil" draggable="true" data-type="wrapper" data-value="Foil"></div>
+        <div class="draggable-card wrapper-card" id="item-ducttape" draggable="true" data-type="wrapper" data-value="Duct Tape"></div>
+        <div class="draggable-card wrapper-card" id="item-bubblewrap" draggable="true" data-type="wrapper" data-value="Bubble Wrap"></div>
+
+        <div class="draggable-card child-card" id="item-arthur" draggable="true" data-type="child" data-value="Arthur"></div>
+        <div class="draggable-card child-card" id="item-beatrice" draggable="true" data-type="child" data-value="Beatrice"></div>
+        <div class="draggable-card child-card" id="item-charlie" draggable="true" data-type="child" data-value="Charlie"></div>
+      </aside>
+
+      <section class="desk">
+        <div class="action-panel">
+          <button id="shipButton">Ship Gifts</button>
+          <button id="resetButton">Reset Desk</button>
+        </div>
+
+        <div class="package-column" id="package-column-1">
+          <div class="package-slot" id="gift-slot-1" data-package="0" data-field="gift">
+            <div class="slot-content empty"></div>
+          </div>
+          <div class="package-slot" data-package="0" data-field="wrapper">
+            <div class="slot-content empty"></div>
+          </div>
+          <div class="package-slot" data-package="0" data-field="child">
+            <div class="slot-content empty"></div>
+          </div>
+        </div>
+
+        <div class="package-column" id="package-column-2">
+          <div class="package-slot" id="gift-slot-2" data-package="1" data-field="gift">
+            <div class="slot-content empty"></div>
+          </div>
+          <div class="package-slot" data-package="1" data-field="wrapper">
+            <div class="slot-content empty"></div>
+          </div>
+          <div class="package-slot" data-package="1" data-field="child">
+            <div class="slot-content empty"></div>
+          </div>
+        </div>
+
+        <div class="package-column" id="package-column-3">
+          <div class="package-slot" id="gift-slot-3" data-package="2" data-field="gift">
+            <div class="slot-content empty"></div>
+          </div>
+          <div class="package-slot" data-package="2" data-field="wrapper">
+            <div class="slot-content empty"></div>
+          </div>
+          <div class="package-slot" data-package="2" data-field="child">
+            <div class="slot-content empty"></div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div id="resultModal" class="modal-overlay">
+    <div class="modal-card">
+      <h2 id="modalTitle">Result</h2>
+      <p id="modalMessage">Message goes here.</p>
+      <button id="modalClose">Close</button>
+    </div>
+  </div>
+
+  <div id="inspectorModal" class="modal-overlay">
+    <div class="modal-card inspector-card">
+      <img id="inspectImage" class="inspect-image" src="" alt="" />
+      <h2 id="inspectTitle" class="inspect-title">Inspect item</h2>
+      <p id="inspectDescription" class="inspect-description">Select an item from the sidebar to view its description.</p>
+      <button id="inspectClose" class="modal-close-button" aria-label="Close">×</button>
+    </div>
+  </div>
+
+  <div id="helpModal" class="modal-overlay">
+    <div class="help-content">
+      <h2 class="help-title">MISSION BRIEFING</h2>
+      <p class="help-text">Disaster at the Workshop! The elves are on strike, and the clock is ticking toward midnight. Only three children remain on the "Nice" list—unfortunately—but these triplets are making your head spin. Click their Polaroids to decipher their demands. Match the gift to the paper to the child before the new year strikes, or this will be your final flight. The fate of Christmas is in your hands, Santa.</p>
+      <button id="helpClose" class="modal-close-button" aria-label="Close">×</button>
+    </div>
+  </div>
+
+  <script>
+    const state = {
+      packages: [
+        { gift: null, wrapper: null, child: null },
+        { gift: null, wrapper: null, child: null },
+        { gift: null, wrapper: null, child: null }
+      ]
+    };
+
+    const allGifts = ["Cactus", "Rollerblade", "World's Okayest Brother Mug"];
+    const allWrappers = ["Foil", "Duct Tape", "Bubble Wrap"];
+    const allChildren = ["Arthur", "Beatrice", "Charlie"];
+
+    const draggableCards = document.querySelectorAll(".draggable-card");
+    const packageSlots = document.querySelectorAll(".package-slot");
+    const toolboxGrids = document.querySelectorAll(".item-grid");
+    const shipButton = document.getElementById("shipButton");
+    const resetButton = document.getElementById("resetButton");
+    const modal = document.getElementById("resultModal");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalMessage = document.getElementById("modalMessage");
+    const modalClose = document.getElementById("modalClose");
+    const inspectorModal = document.getElementById("inspectorModal");
+    const inspectImage = document.getElementById("inspectImage");
+    const inspectTitle = document.getElementById("inspectTitle");
+    const inspectDescription = document.getElementById("inspectDescription");
+    const inspectClose = document.getElementById("inspectClose");
+    const helpButton = document.getElementById("helpButton");
+    const helpModal = document.getElementById("helpModal");
+    const helpClose = document.getElementById("helpClose");
+    let isDraggingCard = false;
+
+    const inspectorData = {
+      gift: {
+        Cactus: {
+          icon: "🌵",
+          title: "Cactus",
+          description: "Prickly, mean and hard to kill, a perfect gift for a child."
+        },
+        Rollerblade: {
+          icon: "🛼",
+          title: "Rollerblade",
+          description: "If you break a tooth using this thing at least you’ll get visited by the toothfairy."
+        },
+        "World's Okayest Brother Mug": {
+          icon: "☕",
+          title: "Mug",
+          description: "Perfect for a child that always shares and shows up on time... sometimes."
+        }
+      },
+      wrapper: {
+        Foil: {
+          icon: "✨",
+          title: "Foil",
+          description: "Perfect for keeping things fresh."
+        },
+        "Duct Tape": {
+          icon: "🩹",
+          title: "Tape",
+          description: "Sticky but easy to rip."
+        },
+        "Bubble Wrap": {
+          icon: "🫧",
+          title: "Bubblewrap",
+          description: "Loud but satisfying."
+        }
+      },
+      child: {
+        Arthur: {
+          icon: "🧠",
+          title: "Arthur",
+          description: "I’m the only one who cares for living things, so give me the gift that needs to be watered. I know my siblings are trying to trick you. If the person who ends up with the wheels also has the paper that pops, give me the paper that looks like a baked potato. Otherwise, I’ll take the sticky stuff."
+        },
+        Beatrice: {
+          icon: "🦴",
+          title: "Beatrice",
+          description: "I refuse to touch anything with spines. It’s beneath me. Just make sure my brothers don't get better wrapping than I do."
+        },
+        Charlie: {
+          icon: "🎯",
+          title: "Charlie",
+          description: "I want the loudest paper in the drawer because it’ll annoy Beatrice. I only want the gift with wheels if the \"World’s Okayest Brother\" has his gift wrapped in shiny metal. If he doesn't, I’ll take the leftovers—I’m used to it."
+        }
+      }
+    };
+
+    const assetMap = {
+      'Cactus': 'assets/cactus.png',
+      'Rollerblade': 'assets/rollerblade.png',
+      'World\'s Okayest Brother Mug': 'assets/mug.png',
+      'Foil': 'assets/foil.png',
+      'Duct Tape': 'assets/tape.png',
+      'Bubble Wrap': 'assets/bubblewrap.png',
+      'Arthur': 'assets/arthur.png',
+      'Beatrice': 'assets/beatrice.png',
+      'Charlie': 'assets/charlie.png'
+    };
+
+    draggableCards.forEach(card => {
+      card.addEventListener("dragstart", event => {
+        isDraggingCard = true;
+        event.dataTransfer.setData("text/plain", JSON.stringify({
+          type: card.dataset.type,
+          value: card.dataset.value
+        }));
+        event.dataTransfer.effectAllowed = "move";
+      });
+
+      card.addEventListener("dragend", () => {
+        setTimeout(() => {
+          isDraggingCard = false;
+        }, 0);
+      });
+
+      card.addEventListener("click", event => {
+        if (isDraggingCard) {
+          return;
+        }
+        openInspector(card.dataset.type, card.dataset.value);
+      });
+    });
+
+    packageSlots.forEach(slot => {
+      slot.draggable = true;
+
+      slot.addEventListener("dragstart", event => {
+        const pkgIndex = parseInt(slot.dataset.package, 10);
+        const field = slot.dataset.field;
+        const value = state.packages[pkgIndex][field];
+        if (!value) {
+          event.preventDefault();
+          return;
+        }
+        event.dataTransfer.setData("text/plain", JSON.stringify({
+          type: field,
+          value
+        }));
+        event.dataTransfer.effectAllowed = "move";
+      });
+
+      slot.addEventListener("dragover", event => {
+        event.preventDefault();
+        slot.classList.add("drag-over");
+      });
+
+      slot.addEventListener("dragleave", () => {
+        slot.classList.remove("drag-over");
+      });
+
+      slot.addEventListener("drop", event => {
+        event.preventDefault();
+        slot.classList.remove("drag-over");
+        const payload = JSON.parse(event.dataTransfer.getData("text/plain"));
+        handleDrop(parseInt(slot.dataset.package, 10), slot.dataset.field, payload);
+      });
+    });
+
+    toolboxGrids.forEach(grid => {
+      grid.addEventListener("dragover", event => {
+        event.preventDefault();
+        grid.classList.add("drag-over");
+      });
+
+      grid.addEventListener("dragleave", () => {
+        grid.classList.remove("drag-over");
+      });
+
+      grid.addEventListener("drop", event => {
+        event.preventDefault();
+        grid.classList.remove("drag-over");
+        const payload = JSON.parse(event.dataTransfer.getData("text/plain"));
+        handleReturn(payload);
+      });
+    });
+
+    shipButton.addEventListener("click", () => {
+      const result = validatePackages();
+      showModal(result.success ? "Victory!" : "Failure", result.message);
+    });
+
+    resetButton.addEventListener("click", resetDesk);
+    modalClose.addEventListener("click", () => modal.classList.remove("visible"));
+    inspectClose.addEventListener("click", closeInspector);
+    inspectorModal.addEventListener("click", event => {
+      if (event.target === inspectorModal) {
+        closeInspector();
+      }
+    });
+
+    helpButton.addEventListener("click", () => {
+      helpModal.classList.add("visible");
+    });
+
+    helpClose.addEventListener("click", () => {
+      helpModal.classList.remove("visible");
+    });
+
+    helpModal.addEventListener("click", event => {
+      if (event.target === helpModal) {
+        helpModal.classList.remove("visible");
+      }
+    });
+
+    function handleDrop(packageIndex, field, payload) {
+      if (field !== payload.type) {
+        showModal("Invalid drop", "Drop the correct type into each slot: gift, wrapper, or child.");
+        return;
+      }
+
+      releaseItem(payload.type, payload.value);
+      state.packages[packageIndex][field] = payload.value;
+      renderPackages();
+    }
+
+    function openInspector(type, value) {
+      const entry = inspectorData[type]?.[value];
+      if (!entry) {
+        return;
+      }
+      inspectImage.src = assetMap[value] || "";
+      inspectImage.alt = entry.title || value;
+      inspectTitle.textContent = entry.title;
+      inspectDescription.textContent = entry.description;
+      inspectorModal.classList.add("visible");
+    }
+
+    function closeInspector() {
+      inspectorModal.classList.remove("visible");
+    }
+
+    function releaseItem(type, value) {
+      state.packages.forEach(pkg => {
+        if (pkg[type] === value) {
+          pkg[type] = null;
+        }
+      });
+    }
+
+    function handleReturn(payload) {
+      if (!payload || !payload.type || !payload.value) {
+        return;
+      }
+      releaseItem(payload.type, payload.value);
+      renderPackages();
+    }
+
+    function renderPackages() {
+      packageSlots.forEach(slot => {
+        const pkgIndex = parseInt(slot.dataset.package, 10);
+        const field = slot.dataset.field;
+        const content = slot.querySelector(".slot-content");
+        const value = state.packages[pkgIndex][field];
+        
+        if (value) {
+          content.textContent = "";
+          content.style.backgroundImage = `url('${assetMap[value] || ''}')`;
+          content.style.backgroundSize = 'contain';
+          content.style.backgroundPosition = 'center';
+          content.style.backgroundRepeat = 'no-repeat';
+          content.classList.remove("empty");
+        } else {
+          content.textContent = "";
+          content.style.backgroundImage = '';
+          content.classList.add("empty");
+        }
+      });
+    }
+
+    function validatePackages() {
+      const missing = state.packages.some(pkg => !pkg.gift || !pkg.wrapper || !pkg.child);
+      if (missing) {
+        return { success: false, message: "Santa, these triplets aren't happy! Check your riddles." };
+      }
+
+      const arthurPackage = state.packages.find(pkg => pkg.child === "Arthur");
+      const beatricePackage = state.packages.find(pkg => pkg.child === "Beatrice");
+      const charliePackage = state.packages.find(pkg => pkg.child === "Charlie");
+
+      if (!arthurPackage || !beatricePackage || !charliePackage) {
+        return { success: false, message: "Santa, these triplets aren't happy! Check your riddles." };
+      }
+
+      if (arthurPackage.gift !== "Cactus") {
+        return { success: false, message: "Santa, these triplets aren't happy! Check your riddles." };
+      }
+
+      if (beatricePackage.gift !== "Rollerblade") {
+        return { success: false, message: "Santa, these triplets aren't happy! Check your riddles." };
+      }
+
+      if (charliePackage.wrapper !== "Bubble Wrap") {
+        return { success: false, message: "Santa, these triplets aren't happy! Check your riddles." };
+      }
+
+      const rollerbladePackage = state.packages.find(pkg => pkg.gift === "Rollerblade");
+      const rollerbladeWithBubble = rollerbladePackage?.wrapper === "Bubble Wrap";
+      const requiredArthurWrapper = rollerbladeWithBubble ? "Foil" : "Duct Tape";
+
+      if (arthurPackage.wrapper !== requiredArthurWrapper) {
+        return { success: false, message: "Santa, these triplets aren't happy! Check your riddles." };
+      }
+
+      const mugPackage = state.packages.find(pkg => pkg.gift === "World's Okayest Brother Mug");
+      if (!mugPackage) {
+        return { success: false, message: "Santa, these triplets aren't happy! Check your riddles." };
+      }
+
+      const charlieGift = charliePackage.gift;
+      if (mugPackage.wrapper === "Foil") {
+        if (charlieGift !== "Rollerblade") {
+          return { success: false, message: "Santa, these triplets aren't happy! Check your riddles." };
+        }
+      } else {
+        const otherGifts = [arthurPackage.gift, beatricePackage.gift];
+        const leftoverGift = allGifts.find(gift => !otherGifts.includes(gift));
+        if (charlieGift !== leftoverGift) {
+          return { success: false, message: "Santa, these triplets aren't happy! Check your riddles." };
+        }
+      }
+
+      return { success: true, message: "The Midnight Shift puzzle is solved. Ship the packages!" };
+    }
+
+    function showModal(title, message) {
+      modalTitle.textContent = title;
+      modalMessage.textContent = message;
+      modal.classList.add("visible");
+    }
+
+    function resetDesk() {
+      state.packages = state.packages.map(() => ({ gift: null, wrapper: null, child: null }));
+      renderPackages();
+    }
+
+    renderPackages();
+  </script>
+</body>
+</html>
